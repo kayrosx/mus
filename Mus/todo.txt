@@ -1,0 +1,3 @@
+falta por cambiar bien las barras, que se actualice
+y arreglar lo de que los botones solo puedan estar en
+un sitio a la vez
