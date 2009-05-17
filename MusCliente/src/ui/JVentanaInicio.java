@@ -1,7 +1,5 @@
 package ui;
 
-import io.LeerUsuarios;
-
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -18,20 +16,22 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import net.ConectarServidor;
+
 import obj.Usuario;
-import util.MapaJugadores;
-import util.PassIncorrecto;
-import util.UsuarioNoExiste;
 
 
 public final class JVentanaInicio extends JFrame
 {
-	JLabel lblNombre = new JLabel("Nombre:     ");
-	JLabel lblPass = new JLabel("Contraseña:     ");
-	JLabel lblTitulo = new JLabel("Crea un nuevo usuario o entra con el tuyo");
-	JTextField txtNombre = new JTextField(10);
-	JPasswordField txtPass = new JPasswordField(10);
-	JButton btnLogin = new JButton("Acceder");
+	private JLabel lblNombre = new JLabel("Nombre:     ");
+	private JLabel lblPass = new JLabel("Contraseña:     ");
+	private JLabel lblTitulo = new JLabel("Crea un nuevo usuario o entra con el tuyo");
+	private JTextField txtNombre = new JTextField(10);
+	private JPasswordField txtPass = new JPasswordField(10);
+	private JButton btnLogin = new JButton("Acceder");
+	private ConectarServidor comunicacion;
+	private Usuario u;
+	private int codop = -1;
 	
 	public static void main(String[] args)
 	{
@@ -41,7 +41,6 @@ public final class JVentanaInicio extends JFrame
 	public JVentanaInicio()
 	{
 		init();
-		carga();
 		eventos();
 	}
 	
@@ -98,26 +97,30 @@ public final class JVentanaInicio extends JFrame
 				
 				if(!txtNombre.getText().isEmpty() && !pass.isEmpty() )
 				{
-					try
+					u = new Usuario(txtNombre.getText(), pass);
+					comunicacion = new ConectarServidor(u, JVentanaInicio.this);
+					comunicacion.start();
+					while(codop == -1)
+					{}
+					System.out.println(codop);
+					if(codop == 0)
 					{
-						MapaJugadores.validate(new Usuario(txtNombre.getText(), pass));
-						new JVentanaUsuario(MapaJugadores.getUsuario(new Usuario(txtNombre.getText(), pass)));
+						new JVentanaUsuario(u);
 						JVentanaInicio.this.dispose();
 					}
-					catch(PassIncorrecto pi)
+					else if(codop == 1)
 					{
 						JOptionPane.showMessageDialog(JVentanaInicio.this, "La contraseña no se corresponde con la del usuario.\nAsegurate de haber introducido los datos correctamente.", "Datos incorrectos", JOptionPane.ERROR_MESSAGE);
 						txtPass.setText("");
 						txtPass.requestFocus();
 					}
-					catch(UsuarioNoExiste une)
+					else if(codop == 2)
 					{
 						int opcion = JOptionPane.showConfirmDialog(JVentanaInicio.this, "El usuario " + txtNombre.getText() + " no existe. Quieres crearlo?", "Nuevo Usuario", JOptionPane.YES_NO_OPTION);
 						
 						if(opcion == JOptionPane.YES_OPTION)
 						{
-							Usuario u = new Usuario(txtNombre.getText(), pass);
-							if(MapaJugadores.add(u))
+							if(true/*MapaJugadores.add(u)*/)
 							{
 								JOptionPane.showMessageDialog(JVentanaInicio.this, "Usuario creado: " + u);
 								new JVentanaImgs(u);
@@ -158,8 +161,8 @@ public final class JVentanaInicio extends JFrame
 		});
 	}
 	
-	private void carga()
+	public void setLogin(int i)
 	{
-		LeerUsuarios.cargaUsuarios();
+		codop = i;
 	}
 }

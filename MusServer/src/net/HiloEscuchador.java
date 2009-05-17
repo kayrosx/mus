@@ -3,8 +3,6 @@ package net;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 import ui.JAppServidor;
 
@@ -12,24 +10,16 @@ public class HiloEscuchador extends Thread
 {
 	JAppServidor ventanaServidor ;
 	boolean fin = false;
-	Collection listaClientes = new ArrayList();
+	ArrayList listaClientes = new ArrayList();
 	
-	public HiloEscuchador(JAppServidor j)
+	public HiloEscuchador(JAppServidor v)
 	{
-		ventanaServidor = j;
-	}
-	
-	public void sendAll(String texto)
-	{
-		Iterator it = listaClientes.iterator();
-		while(it.hasNext())
-			((ConexionClientes)it.next()).send(texto);
+		ventanaServidor = v;
 	}
 	
 	public void run()
 	{
-
-		ventanaServidor .setEstado("Escuchando...");
+		ventanaServidor.setEstado("Escuchando...");
 		try 
 		{
 			ServerSocket ss = new ServerSocket(6060);
@@ -43,12 +33,10 @@ public class HiloEscuchador extends Thread
 				gc.start();
 				listaClientes.add(gc);
 			}
-			
-			//ss.close();
 		}
 		catch (IOException e1) 
 		{
 			ventanaServidor.setError(e1.toString());
-		}	
+		}
 	}
 }

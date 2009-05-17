@@ -20,8 +20,6 @@ import javax.swing.JPanel;
 
 import obj.Usuario;
 
-import obj.*;
-
 public class JVentanaUsuario extends JFrame
 {
 	Usuario u;

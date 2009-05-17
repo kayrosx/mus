@@ -3,66 +3,73 @@ package net;
 import java.net.*;
 import java.io.*;
 
+import obj.Usuario;
+
 import ui.JAppServidor;
+import util.MapaJugadores;
+import util.PassIncorrecto;
+import util.UsuarioNoExiste;
 
 public class ConexionClientes extends Thread
 {
 	private Socket socketServidor;
-	PrintWriter pw;
+	private ObjectInputStream ois = null;
+	private ObjectOutputStream oos = null;
+	private DataOutputStream dos = null;
 	private JAppServidor ventanaServidor;
 	
 	public ConexionClientes(Socket s, JAppServidor v)
 	{
 	    socketServidor = s;
         ventanaServidor = v;
-        
-        try 
-        {
-            pw = new PrintWriter(
-                    new OutputStreamWriter(socketServidor.getOutputStream()), true);
-        }
-        catch (IOException e) 
-        {
-            this.setError(e.toString());
-        } 
-	}
-	
-    public void send(String texto)
-	{
-			pw.println(texto);
+        try
+		{
+			ois = new ObjectInputStream(socketServidor.getInputStream());
+			oos = new ObjectOutputStream(socketServidor.getOutputStream());
+			dos = new DataOutputStream(socketServidor.getOutputStream());
+		} 
+        catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public void run()
 	{
+		Usuario u = null;
+		String s = "El usuario ";
 		try
 		{
-			ventanaServidor.setEstado("Cliente aceptado");
+			u = (Usuario)ois.readObject();
 			
-			BufferedReader br = new BufferedReader(
-				new InputStreamReader(socketServidor.getInputStream()));
-	
-			String s = "";
-			String nombre = br.readLine();
-			while(!s.equalsIgnoreCase("FIN"))
+			s = s + u.getNombre() + " y se ha identificado "; 
+			int i;
+			try
 			{
-				s = br.readLine();
-				ventanaServidor.addMensaje(nombre.toUpperCase() + " dice: " + s + "\n");		        
+				MapaJugadores.validate(u);
+				i = 0;
+				s = s + "correctamente\n";
 			}
-			ventanaServidor.addMensaje(nombre.toUpperCase() + " desconectado\n");
-			
-			br.close();
-			socketServidor.close();
+			catch (PassIncorrecto e)
+			{
+				s = s + "incorrectamente\n";
+				i = 1;
+			}
+			catch (UsuarioNoExiste e)
+			{
+				s = s + "incorrectamente\n";
+				i = 2;
+			}
+			dos.writeInt(i);
+			ventanaServidor.addMensaje(s);
 		}
-		catch (IOException e) 
+		catch (ClassNotFoundException cnfe)
 		{
-		    this.setError(e.toString());
-		}	
+			cnfe.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
-	
-    private void setError(String error)
-    {
-        ventanaServidor.setError(error);
-        
-    }	
-
 }

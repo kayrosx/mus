@@ -15,6 +15,7 @@ public class LeerUsuarios
 	{
 		FileInputStream fis = null;
 		ObjectInputStream ois = null; 
+		
 		try
 		{		
 			fis = new FileInputStream("usuarios.obj");  

@@ -1,5 +1,7 @@
 package ui;
 
+import io.LeerUsuarios;
+
 import java.awt.Container;
 import java.awt.BorderLayout;
 
@@ -7,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -28,7 +28,6 @@ public class JAppServidor extends JFrame implements Runnable
 	
 	private Thread hiloReloj;
 	
-	private int contador = 0;
 	private boolean fin = false;
 	
 	public static void main(String[] args) 
@@ -38,6 +37,7 @@ public class JAppServidor extends JFrame implements Runnable
 	
 	public JAppServidor()
 	{
+		carga();
 		hiloReloj = new Thread(this);
 		
 		Container c = this.getContentPane();
@@ -63,7 +63,6 @@ public class JAppServidor extends JFrame implements Runnable
 			{
 				public void windowClosing(WindowEvent e)
 				{
-				    servidorListener.sendAll("FIN");
 					fin = true;
 					JAppServidor.this.dispose();
 					System.exit(0);
@@ -79,6 +78,11 @@ public class JAppServidor extends JFrame implements Runnable
 		this.setTitle("Servidor");
 		this.setSize(200, 185);
 		this.setVisible(true);
+	}
+	
+	private void carga()
+	{
+		LeerUsuarios.cargaUsuarios();
 	}
 	
 	public void setEstado(String s)
@@ -102,13 +106,6 @@ public class JAppServidor extends JFrame implements Runnable
 		{
 			try 
 			{
-				//Calendar c = new GregorianCalendar();
-				//String hora = "" + c.get(Calendar.HOUR_OF_DAY);
-				//hora += ":" + c.get(Calendar.MINUTE) + ":" + c.get(Calendar.SECOND);
-			    //this.setTitle(hora);
-
-				//this.setTitle(String.valueOf(contador++) + " segundos");
-			    
 				this.setTitle(new java.util.Date().toString());
 				
 				Thread.sleep(1000);				
