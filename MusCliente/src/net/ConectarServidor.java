@@ -44,11 +44,11 @@ public class ConectarServidor extends Thread
 		} 
 		catch (UnknownHostException e)
 		{
-			v.mensajeError(v.UNKNOWN_HOST, true);
+			v.mensajeError(JVentanaInicio.UNKNOWN_HOST, true);
 		} 
 		catch (IOException e)
 		{
-			v.mensajeError(v.NO_CONECTABLE, true);
+			v.mensajeError(JVentanaInicio.NO_CONECTABLE, true);
 		}
 	}
 	
