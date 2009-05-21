@@ -1,81 +1,128 @@
 package net;
 
-//import java.io.BufferedReader;
-//import java.io.BufferedWriter;
 import java.io.DataInputStream;
-//import java.io.DataOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-//import java.io.InputStreamReader;
-//import java.io.ObjectInputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-//import java.io.OutputStreamWriter;
-//import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 import obj.Usuario;
-import ui.JVentanaInicio;
 
 public class ConectarServidor extends Thread
 {
-	// Socket
 	private Socket sCliente;
-	
-	// Lectura
-	private InputStream is;
+	private DataOutputStream dos;
 	private DataInputStream dis;
-	//private ObjectInputStream ois;
-	//private BufferedReader br;
-	
-	// Escritura
-	private OutputStream os;
-	//private DataOutputStream dos;
 	private ObjectOutputStream oos;
-	//private PrintWriter pw;
+	private ObjectInputStream ois;
 	
-	// Atributos
-	private Usuario user;
-	private JVentanaInicio ventana;
-	
-	public ConectarServidor(Usuario u, JVentanaInicio v)
-	{
-		user = u;
-		ventana = v;
-		try
-		{
-			sCliente = new Socket("127.0.0.1", 6060);
-			os = sCliente.getOutputStream();
-			is = sCliente.getInputStream();
-			//ois = new ObjectInputStream(is);
-			oos = new ObjectOutputStream(os);
-			dis = new DataInputStream(is);
-			//pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(os)));
-			//br = new BufferedReader(new InputStreamReader(is));
-		} 
-		catch (UnknownHostException e)
-		{
-			System.out.println("Error");
-		} 
-		catch (IOException e)
-		{
-			System.out.println("Error");
-		}
-	}
+	private final int LOGIN = 1;
+	private final int CREA_USUARIO = 2;
+	private final int MODIFICA_USUARIO = 3;
+	private final int DEVUELVE_USUARIO = 4;
 	
 	public void run()
 	{
 		try
 		{
-			oos.writeObject(user);
-			int i = dis.readInt();
-			System.out.println(i);
-			ventana.setLogin(i);
+			sCliente = new Socket("127.0.0.1", 6060);
+			dos = new DataOutputStream(sCliente.getOutputStream());
+			oos = new ObjectOutputStream(sCliente.getOutputStream());
+			dis = new DataInputStream(sCliente.getInputStream());
+			ois = new ObjectInputStream(sCliente.getInputStream());
+		} 
+		catch (UnknownHostException e)
+		{
+			System.out.println("No se encuentra el servidor");
+		} 
+		catch (IOException e)
+		{
+			System.out.println("No se puede conectar al servidor");
+		}
+	}
+	
+	public int login(Usuario u)
+	{
+		int login = -1;
+		try 
+		{
+			// Envío el código para el servidor
+			dos.writeInt(LOGIN);
+			// Envío el usuario para ver si el login es correcto
+			oos.writeObject(u);
+			// Recibo un entero verificando el login
+			login = dis.readInt();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		return login;
+	}
+	
+	public boolean creaJugador(Usuario u)
+	{
+		boolean creado = false;
+		try 
+		{
+			// Envío el código para el servidor
+			dos.writeInt(CREA_USUARIO);
+			// Envío el usuario a crear
+			oos.writeObject(u);
+			// Recibo si se ha creado correctamente
+			creado = dis.readBoolean();
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return creado;
+	}
+	
+	public boolean modificaUsuario(Usuario u)
+	{
+		Boolean b = false;
+		try 
+		{
+			// Envío el código para el servidor
+			dos.writeInt(MODIFICA_USUARIO);
+			// Envío el usuario a modificar
+			oos.writeObject(u);
+			System.out.println(u);
+			// Recibo si se ha modificado correctamente
+			b = dis.readBoolean();
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return b;
+	}
+	
+	public Usuario getUsuario(Usuario u)
+	{
+		try 
+		{
+			// Envío el código para el servidor
+			dos.writeInt(DEVUELVE_USUARIO);
+			// Envío el usuario
+			oos.writeObject(u);
+			// Recibo el usuario "completo"
+			Usuario uGet = (Usuario) ois.readObject();
+			// Devuelvo el usuario
+			return uGet;
+		} 
+		catch (ClassNotFoundException e)
+		{
+			return null;
 		}
 		catch (IOException e)
 		{
-			System.out.println("Error");
+			return null;
 		}
 	}
 }

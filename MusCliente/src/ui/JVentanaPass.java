@@ -14,8 +14,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
+import net.ConectarServidor;
+
 import obj.Usuario;
-import util.MapaJugadores;
 
 
 public class JVentanaPass extends JFrame
@@ -30,8 +31,11 @@ public class JVentanaPass extends JFrame
 	JButton btnAceptar = new JButton("Aceptar");
 	JButton btnCancelar = new JButton("Cancelar");
 	
-	public JVentanaPass(Usuario u)
+	private ConectarServidor hilo;
+	
+	public JVentanaPass(Usuario u, ConectarServidor h)
 	{
+		this.hilo = h;
 		this.u = u;
 		init();
 		events();
@@ -86,11 +90,12 @@ public class JVentanaPass extends JFrame
 					{
 						if(passN.equals(passNC))
 						{
-							MapaJugadores.getUsuario(u);
+							// MANDAR EL USUARIO MODIFICADO
+							hilo.getUsuario(u);
 							u.setPass(passNC);
-							MapaJugadores.modificaUsuario(u);
+							hilo.modificaUsuario(u);
 							JOptionPane.showMessageDialog(JVentanaPass.this, "La contraseña se ha cambiado satisfactoriamente.", "Contraseña Cambiada", JOptionPane.INFORMATION_MESSAGE);
-							new JVentanaUsuario(u);
+							new JVentanaUsuario(u, hilo);
 							JVentanaPass.this.dispose();
 						}
 						else
@@ -126,7 +131,7 @@ public class JVentanaPass extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				new JVentanaUsuario(u);
+				new JVentanaUsuario(u, hilo);
 				JVentanaPass.this.dispose();
 			}
 		});

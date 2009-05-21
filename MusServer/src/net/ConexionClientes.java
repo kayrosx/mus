@@ -13,63 +13,124 @@ import util.UsuarioNoExiste;
 public class ConexionClientes extends Thread
 {
 	private Socket socketServidor;
-	private ObjectInputStream ois = null;
-	private ObjectOutputStream oos = null;
-	private DataOutputStream dos = null;
+	private DataInputStream dis;
+	private ObjectInputStream ois;
+	private DataOutputStream dos;
+	private ObjectOutputStream oos;
 	private JAppServidor ventanaServidor;
 	
 	public ConexionClientes(Socket s, JAppServidor v)
 	{
 	    socketServidor = s;
         ventanaServidor = v;
-        try
-		{
-			ois = new ObjectInputStream(socketServidor.getInputStream());
-			oos = new ObjectOutputStream(socketServidor.getOutputStream());
-			dos = new DataOutputStream(socketServidor.getOutputStream());
-		} 
-        catch (IOException e)
-		{
-			e.printStackTrace();
-		}
 	}
 	
 	public void run()
 	{
-		Usuario u = null;
-		String s = "El usuario ";
 		try
 		{
-			u = (Usuario)ois.readObject();
+			dis = new DataInputStream(socketServidor.getInputStream());
+			ois = new ObjectInputStream(socketServidor.getInputStream());
+			dos = new DataOutputStream(socketServidor.getOutputStream());
+			oos = new ObjectOutputStream(socketServidor.getOutputStream());
 			
-			s = s + u.getNombre() + " y se ha identificado "; 
-			int i;
-			try
+			ventanaServidor.addMensaje("Conectado\n");
+			
+			int opc = dis.readInt();
+			while(opc != -1)
 			{
-				MapaJugadores.validate(u);
-				i = 0;
-				s = s + "correctamente\n";
+				switch(opc)
+				{
+				case 1:		// Login
+					try 
+					{
+						int login = -1;
+						// Recibo el usuario del que hacer el login
+						Usuario u = (Usuario)ois.readObject();
+						try 
+						{
+							MapaJugadores.validate(u);
+							login = 0;
+						} 
+						catch (PassIncorrecto e)
+						{
+							login = 1;
+						}
+						catch (UsuarioNoExiste e)
+						{
+							login = 2;
+						}
+						dos.writeInt(login);
+						u=null;
+					} 
+					catch (ClassNotFoundException e) 
+					{
+						e.printStackTrace();
+					}
+					
+					break;
+				case 2:		// Crea usuario
+					try 
+					{
+						// Recibo el usuario a crear
+						Usuario newUser = (Usuario) ois.readObject();
+						// Añade al mapa el nuevo usuario
+						boolean creado = false;
+						if(MapaJugadores.add(newUser))
+						{
+							creado = true;
+							ventanaServidor.addMensaje("Creado el usuario " + newUser.getNombre());
+						}
+						
+						// Envío si se ha creado
+						dos.writeBoolean(creado);
+						
+						newUser = null;
+					} 
+					catch (ClassNotFoundException e)
+					{
+						e.printStackTrace();
+					}
+					break;
+				case 3:		// Modifica usuario
+					// Recibo el usuario a modificar
+					Usuario uMod;
+					try 
+					{
+						uMod = (Usuario)ois.readObject();
+						System.out.println(uMod);
+						boolean mod = false;
+						mod = MapaJugadores.modificaUsuario(uMod);
+						dos.writeBoolean(mod);
+					} 
+					catch (ClassNotFoundException e) 
+					{
+						e.printStackTrace();
+					}
+					uMod = null;
+					break;
+				case 4:		// Devuelve usuario
+					try 
+					{
+						// Recibo el usuario a devolver
+						Usuario uDevolver = (Usuario)ois.readObject();
+						// Devuelvo el usuario "completo"
+						uDevolver = MapaJugadores.getUsuario(uDevolver);
+						oos.writeObject(uDevolver);
+						uDevolver = null;
+					} 
+					catch (ClassNotFoundException e) 
+					{
+						e.printStackTrace();
+					}
+					break;
+				}
+				opc = dis.readInt();
 			}
-			catch (PassIncorrecto e)
-			{
-				s = s + "incorrectamente\n";
-				i = 1;
-			}
-			catch (UsuarioNoExiste e)
-			{
-				s = s + "incorrectamente\n";
-				i = 2;
-			}
-			dos.writeInt(i);
-			ventanaServidor.addMensaje(s);
-		}
-		catch (ClassNotFoundException cnfe)
+		} 
+        catch (IOException e)
 		{
-			cnfe.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
+			System.out.println("Cliente desconectado");
 		}
 	}
 }

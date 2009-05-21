@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import net.ConectarServidor;
+
 import obj.Usuario;
 
 
@@ -25,6 +27,8 @@ public class JVentanaTPartida extends JFrame
 	JLabel lblMensaje = new JLabel("Selecciona el numero de jugadores:");
 	JButton btnAceptar = new JButton("Aceptar");
 	JButton btnCancelar = new JButton("Cancelar");
+	
+	private ConectarServidor hilo;
 	
 	public JVentanaTPartida(Usuario u)
 	{
@@ -71,7 +75,7 @@ public class JVentanaTPartida extends JFrame
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				new JVentanaUsuario(u);
+				new JVentanaUsuario(u, hilo);
 				JVentanaTPartida.this.dispose();
 			}
 		});

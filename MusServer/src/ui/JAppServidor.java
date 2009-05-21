@@ -1,9 +1,11 @@
 package ui;
 
+import io.EscribirUsuarios;
+import io.Informe;
 import io.LeerUsuarios;
 
-import java.awt.Container;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +15,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JOptionPane;
@@ -21,9 +24,10 @@ import net.HiloEscuchador;
 
 public class JAppServidor extends JFrame implements Runnable
 {
-	private JLabel lblEstado ;
-	private JButton btnConectar;
-	private JTextArea txtConversacion;
+	private JLabel lblEstado = new JLabel("No escuchando...");
+	private JButton btnConectar = new JButton("Escuchar Clientes");
+	private JButton btnInforme = new JButton("Generar Informe");
+	private JTextArea txtConversacion = new JTextArea(80, 30);
 	private HiloEscuchador servidorListener; 
 	
 	private Thread hiloReloj;
@@ -37,17 +41,33 @@ public class JAppServidor extends JFrame implements Runnable
 	
 	public JAppServidor()
 	{
-		carga();
+		init();
+		events();
+		LeerUsuarios.cargaUsuarios();
+	}
+	
+	private void init()
+	{
 		hiloReloj = new Thread(this);
 		
-		Container c = this.getContentPane();
+		this.setLayout(new BorderLayout());
+		this.add(lblEstado, BorderLayout.NORTH);
+		this.add(new JScrollPane(txtConversacion), BorderLayout.CENTER);
 		
-		c.setLayout(new BorderLayout());
+		// Panel sur
+		JPanel pnlSur = new JPanel(new FlowLayout());
+		pnlSur.add(btnConectar);
+		pnlSur.add(btnInforme);
 		
-		lblEstado = new JLabel("No escuchando...");
-		btnConectar = new JButton("Escuchar Clientes");
-		txtConversacion = new JTextArea(80, 30);
-
+		this.add(pnlSur, BorderLayout.SOUTH);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setTitle("Servidor");
+		this.setSize(300, 185);
+		this.setVisible(true);
+	}
+	
+	private void events()
+	{
 		btnConectar.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e) 
@@ -60,29 +80,26 @@ public class JAppServidor extends JFrame implements Runnable
 		});
 		
 		this.addWindowListener(new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent e)
 			{
-				public void windowClosing(WindowEvent e)
-				{
-					fin = true;
-					JAppServidor.this.dispose();
-					System.exit(0);
-				}
-			});
+				int opc = JOptionPane.showConfirmDialog(JAppServidor.this, "Desea guardar los cambios?", "Guardar", JOptionPane.YES_NO_OPTION);
+				if(opc == JOptionPane.YES_OPTION)
+					EscribirUsuarios.guardaUsuarios();
+				fin = true;
+				JAppServidor.this.dispose();
+				System.exit(0);
+			}
+		});
 		
-		c.add(lblEstado, BorderLayout.NORTH);
-		c.add(new JScrollPane(txtConversacion), BorderLayout.CENTER);
-		c.add(btnConectar, BorderLayout.SOUTH);
-		
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		this.setTitle("Servidor");
-		this.setSize(200, 185);
-		this.setVisible(true);
-	}
-	
-	private void carga()
-	{
-		LeerUsuarios.cargaUsuarios();
+		btnInforme.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Informe.generaInforme();
+				JOptionPane.showMessageDialog(JAppServidor.this, "Informe generado correctamente", "Informe generado", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
 	}
 	
 	public void setEstado(String s)
@@ -115,5 +132,5 @@ public class JAppServidor extends JFrame implements Runnable
 				e.printStackTrace();
 			}
 		}
-	}	
+	}
 }

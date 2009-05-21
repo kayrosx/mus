@@ -1,8 +1,5 @@
 package ui;
 
-import io.EscribirUsuarios;
-import io.Informe;
-
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -15,8 +12,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import net.ConectarServidor;
 
 import obj.Usuario;
 
@@ -28,11 +26,13 @@ public class JVentanaUsuario extends JFrame
 	JButton btnIniciarPartida = new JButton("Iniciar Partida");
 	JButton btnModificarImg = new JButton("Modificar Imagen");
 	JButton btnModificarPass = new JButton("Cambiar Contraseña");
-	JButton btnInforme = new JButton("Generar Informe");
 	
-	JVentanaUsuario(Usuario u)
+	ConectarServidor hilo;
+	
+	JVentanaUsuario(Usuario user, ConectarServidor hilo)
 	{
-		this.u = u;
+		this.hilo = hilo;
+		this.u = hilo.getUsuario(user);
 		init();
 		events();
 	}
@@ -57,7 +57,6 @@ public class JVentanaUsuario extends JFrame
 		panelInferior.add(btnModificarImg);
 		panelInferior.add(btnModificarPass);
 		panelInferior.add(btnIniciarPartida);
-		panelInferior.add(btnInforme);
 		
 		this.add(panelSuperior);
 		this.add(panelInferior);
@@ -85,7 +84,7 @@ public class JVentanaUsuario extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				new JVentanaImgs(u);
+				new JVentanaImgs(u, hilo);
 				JVentanaUsuario.this.dispose();
 			}
 		});
@@ -94,17 +93,8 @@ public class JVentanaUsuario extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				new JVentanaPass(u);
+				new JVentanaPass(u, hilo);
 				JVentanaUsuario.this.dispose();
-			}
-		});
-		
-		btnInforme.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				Informe.generaInforme();
-				JOptionPane.showMessageDialog(JVentanaUsuario.this, "Informe generado correctamente", "Informe generado", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		
@@ -112,9 +102,7 @@ public class JVentanaUsuario extends JFrame
 		{
 			public void windowClosing(WindowEvent e)
 			{
-				int opc = JOptionPane.showConfirmDialog(JVentanaUsuario.this, "Desea guardar los cambios?", "Guardar", JOptionPane.YES_NO_OPTION);
-				if(opc == JOptionPane.YES_OPTION)
-					EscribirUsuarios.guardaUsuarios();
+				// Mandar un mensaje al servidor diciendo que 
 			}
 		});
 	}

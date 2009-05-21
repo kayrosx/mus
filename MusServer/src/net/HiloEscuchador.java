@@ -10,7 +10,7 @@ public class HiloEscuchador extends Thread
 {
 	JAppServidor ventanaServidor ;
 	boolean fin = false;
-	ArrayList listaClientes = new ArrayList();
+	ArrayList<ConexionClientes> listaClientes = new ArrayList<ConexionClientes>();
 	
 	public HiloEscuchador(JAppServidor v)
 	{
@@ -28,13 +28,13 @@ public class HiloEscuchador extends Thread
 			Socket sServidor  = null;
 			while(true)
 			{
-				sServidor  = ss.accept();
+				sServidor = ss.accept();
 				ConexionClientes gc = new ConexionClientes(sServidor, ventanaServidor);
 				gc.start();
 				listaClientes.add(gc);
 			}
 		}
-		catch (IOException e1) 
+		catch (IOException e1)
 		{
 			ventanaServidor.setError(e1.toString());
 		}

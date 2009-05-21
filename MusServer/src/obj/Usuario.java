@@ -2,7 +2,11 @@ package obj;
 
 public class Usuario implements java.io.Serializable
 {
-	//Atributos
+	/**
+     * 
+     */
+    private static final long serialVersionUID = -1221813109873655076L;
+    //Atributos
 	private String nombre;
 	private String pass;
 	private int puntos;
@@ -77,7 +81,7 @@ public class Usuario implements java.io.Serializable
 	/** Devuelve una representacion en forma de String del usuario */
 	public String toString()
 	{
-		return "\nNombre: " + nombre + "\nPuntos: " + puntos;
+		return "\nNombre: " + nombre + "\nPuntos: " + puntos + img;
 	}
 	
 	/** Devuelve un entero que se corresponde con la representacion hash del usuario */

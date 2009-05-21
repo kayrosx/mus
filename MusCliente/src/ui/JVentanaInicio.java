@@ -29,9 +29,8 @@ public final class JVentanaInicio extends JFrame
 	private JTextField txtNombre = new JTextField(10);
 	private JPasswordField txtPass = new JPasswordField(10);
 	private JButton btnLogin = new JButton("Acceder");
-	private ConectarServidor comunicacion;
+	private ConectarServidor hilo;
 	private Usuario u;
-	private int codop = -1;
 	
 	public static void main(String[] args)
 	{
@@ -42,6 +41,7 @@ public final class JVentanaInicio extends JFrame
 	{
 		init();
 		eventos();
+		conectar();
 	}
 	
 	private void init()
@@ -98,32 +98,30 @@ public final class JVentanaInicio extends JFrame
 				if(!txtNombre.getText().isEmpty() && !pass.isEmpty() )
 				{
 					u = new Usuario(txtNombre.getText(), pass);
-					comunicacion = new ConectarServidor(u, JVentanaInicio.this);
-					comunicacion.start();
-					while(codop == -1)
-					{}
-					System.out.println(codop);
-					if(codop == 0)
+					
+					int login = hilo.login(u);
+					if(login == 0)
 					{
-						new JVentanaUsuario(u);
+						u = hilo.getUsuario(u);
+						new JVentanaUsuario(u, hilo);
 						JVentanaInicio.this.dispose();
 					}
-					else if(codop == 1)
+					else if(login == 1)
 					{
 						JOptionPane.showMessageDialog(JVentanaInicio.this, "La contraseña no se corresponde con la del usuario.\nAsegurate de haber introducido los datos correctamente.", "Datos incorrectos", JOptionPane.ERROR_MESSAGE);
 						txtPass.setText("");
 						txtPass.requestFocus();
 					}
-					else if(codop == 2)
+					else if(login == 2)
 					{
 						int opcion = JOptionPane.showConfirmDialog(JVentanaInicio.this, "El usuario " + txtNombre.getText() + " no existe. Quieres crearlo?", "Nuevo Usuario", JOptionPane.YES_NO_OPTION);
 						
 						if(opcion == JOptionPane.YES_OPTION)
 						{
-							if(true/*MapaJugadores.add(u)*/)
+							if(hilo.creaJugador(u))
 							{
 								JOptionPane.showMessageDialog(JVentanaInicio.this, "Usuario creado: " + u);
-								new JVentanaImgs(u);
+								new JVentanaImgs(u, hilo);
 								JVentanaInicio.this.dispose();
 							}
 						}
@@ -161,8 +159,9 @@ public final class JVentanaInicio extends JFrame
 		});
 	}
 	
-	public void setLogin(int i)
+	public void conectar()
 	{
-		codop = i;
+		hilo = new ConectarServidor();
+		hilo.start();
 	}
 }

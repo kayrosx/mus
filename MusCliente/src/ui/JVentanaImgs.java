@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -16,23 +14,24 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import net.ConectarServidor;
+
 import obj.Usuario;
-import util.MapaJugadores;
 
 
 public class JVentanaImgs extends JFrame
 {
 	Usuario u;
 	String imgSeleccionada = "";
-	JLabel lblImg1 = new JLabel(new ImageIcon("1.jpg"));
-	JLabel lblImg2 = new JLabel(new ImageIcon("2.jpg"));
-	JLabel lblImg3 = new JLabel(new ImageIcon("3.jpg"));
-	JLabel lblImg4 = new JLabel(new ImageIcon("4.jpg"));
-	JLabel lblImg5 = new JLabel(new ImageIcon("5.jpg"));
-	JLabel lblImg6 = new JLabel(new ImageIcon("6.jpg"));
-	JLabel lblImg7 = new JLabel(new ImageIcon("7.jpg"));
-	JLabel lblImg8 = new JLabel(new ImageIcon("8.jpg"));
-	JLabel lblImg9 = new JLabel(new ImageIcon("9.jpg"));
+	JLabel lblImg1 = new JLabel(new ImageIcon("imgs/1.jpg"));
+	JLabel lblImg2 = new JLabel(new ImageIcon("imgs/2.jpg"));
+	JLabel lblImg3 = new JLabel(new ImageIcon("imgs/3.jpg"));
+	JLabel lblImg4 = new JLabel(new ImageIcon("imgs/4.jpg"));
+	JLabel lblImg5 = new JLabel(new ImageIcon("imgs/5.jpg"));
+	JLabel lblImg6 = new JLabel(new ImageIcon("imgs/6.jpg"));
+	JLabel lblImg7 = new JLabel(new ImageIcon("imgs/7.jpg"));
+	JLabel lblImg8 = new JLabel(new ImageIcon("imgs/8.jpg"));
+	JLabel lblImg9 = new JLabel(new ImageIcon("imgs/9.jpg"));
 	JLabel lblSeleccionar = new JLabel("Imagen seleccionada: ");
 	JLabel lblSeleccion = new JLabel();
 	JButton btnSeleccionar = new JButton("Seleccionar");
@@ -43,9 +42,12 @@ public class JVentanaImgs extends JFrame
 	JPanel pnlSuperior2 = new JPanel(new FlowLayout());
 	JPanel pnlInferior = new JPanel(new FlowLayout());
 	
-	public JVentanaImgs(Usuario u)
+	ConectarServidor hilo;
+	
+	public JVentanaImgs(Usuario u, ConectarServidor h)
 	{
-		this.u = u;
+		this.hilo = h;
+		this.u = hilo.getUsuario(u);
 		init();
 		events();
 	}
@@ -83,8 +85,8 @@ public class JVentanaImgs extends JFrame
 		}
 		else
 		{
-			imgSeleccionada = "1.jpg";
-			lblSeleccion = new JLabel(new ImageIcon("1.jpg"));	
+			imgSeleccionada = "imgs/1.jpg";
+			lblSeleccion = new JLabel(new ImageIcon(imgSeleccionada));	
 			u.setImg(imgSeleccionada);
 		}
 		pnlSuperior2.add(lblSeleccion);
@@ -111,10 +113,18 @@ public class JVentanaImgs extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				u.setImg(imgSeleccionada);
-				new JVentanaUsuario(u);
-				JVentanaImgs.this.dispose();
-
+				// MANDAR EL USUARIO MODIFICADO
+				Usuario user = hilo.getUsuario(u);
+				user.setImg(imgSeleccionada);
+				if(hilo.modificaUsuario(user))
+				{
+					new JVentanaUsuario(user, hilo);
+					JVentanaImgs.this.dispose();
+				}
+				else
+				{
+					System.out.println("No se ha podido modificar");
+				}
 			}
 		});
 		
@@ -124,7 +134,7 @@ public class JVentanaImgs extends JFrame
 			{
 				if(!imgSeleccionada.isEmpty() || !u.getImg().isEmpty())
 				{
-					new JVentanaUsuario(u);
+					new JVentanaUsuario(u, hilo);
 					JVentanaImgs.this.dispose();	
 				}
 			}
@@ -134,8 +144,8 @@ public class JVentanaImgs extends JFrame
 		{
 			public void mouseClicked(MouseEvent e) 
 			{
-				imgSeleccionada = "1.jpg";
-				lblSeleccion.setIcon(new ImageIcon("1.jpg"));
+				imgSeleccionada = "imgs/1.jpg";
+				lblSeleccion.setIcon(new ImageIcon(imgSeleccionada));
 			}
 		});
 		
@@ -143,8 +153,8 @@ public class JVentanaImgs extends JFrame
 		{
 			public void mouseClicked(MouseEvent e) 
 			{
-				imgSeleccionada = "2.jpg";
-				lblSeleccion.setIcon(new ImageIcon("2.jpg"));
+				imgSeleccionada = "imgs/2.jpg";
+				lblSeleccion.setIcon(new ImageIcon(imgSeleccionada));
 			}
 		});
 		
@@ -152,8 +162,8 @@ public class JVentanaImgs extends JFrame
 		{
 			public void mouseClicked(MouseEvent e) 
 			{
-				imgSeleccionada = "3.jpg";
-				lblSeleccion.setIcon(new ImageIcon("3.jpg"));
+				imgSeleccionada = "imgs/3.jpg";
+				lblSeleccion.setIcon(new ImageIcon(imgSeleccionada));
 			}
 		});
 		
@@ -161,8 +171,8 @@ public class JVentanaImgs extends JFrame
 		{
 			public void mouseClicked(MouseEvent e) 
 			{
-				imgSeleccionada = "4.jpg";
-				lblSeleccion.setIcon(new ImageIcon("4.jpg"));
+				imgSeleccionada = "imgs/4.jpg";
+				lblSeleccion.setIcon(new ImageIcon(imgSeleccionada));
 			}
 		});
 		
@@ -170,8 +180,8 @@ public class JVentanaImgs extends JFrame
 		{
 			public void mouseClicked(MouseEvent e) 
 			{
-				imgSeleccionada = "5.jpg";
-				lblSeleccion.setIcon(new ImageIcon("5.jpg"));
+				imgSeleccionada = "imgs/5.jpg";
+				lblSeleccion.setIcon(new ImageIcon(imgSeleccionada));
 			}
 		});
 		
@@ -179,8 +189,8 @@ public class JVentanaImgs extends JFrame
 		{
 			public void mouseClicked(MouseEvent e) 
 			{
-				imgSeleccionada = "6.jpg";
-				lblSeleccion.setIcon(new ImageIcon("6.jpg"));
+				imgSeleccionada = "imgs/6.jpg";
+				lblSeleccion.setIcon(new ImageIcon(imgSeleccionada));
 			}
 		});
 		
@@ -188,8 +198,8 @@ public class JVentanaImgs extends JFrame
 		{
 			public void mouseClicked(MouseEvent e) 
 			{
-				imgSeleccionada = "7.jpg";
-				lblSeleccion.setIcon(new ImageIcon("7.jpg"));
+				imgSeleccionada = "imgs/7.jpg";
+				lblSeleccion.setIcon(new ImageIcon(imgSeleccionada));
 			}
 		});
 		
@@ -197,8 +207,8 @@ public class JVentanaImgs extends JFrame
 		{
 			public void mouseClicked(MouseEvent e) 
 			{
-				imgSeleccionada = "8.jpg";
-				lblSeleccion.setIcon(new ImageIcon("8.jpg"));
+				imgSeleccionada = "imgs/8.jpg";
+				lblSeleccion.setIcon(new ImageIcon(imgSeleccionada));
 			}
 		});
 		
@@ -206,21 +216,8 @@ public class JVentanaImgs extends JFrame
 		{
 			public void mouseClicked(MouseEvent e) 
 			{
-				imgSeleccionada = "9.jpg";
-				lblSeleccion.setIcon(new ImageIcon("9.jpg"));
-			}
-		});
-		
-		JVentanaImgs.this.addWindowListener(new WindowAdapter()
-		{
-			public void windowClosing(WindowEvent e)
-			{
-				if(!imgSeleccionada.isEmpty())
-				{
-					MapaJugadores.getUsuario(u);
-					u.setImg(imgSeleccionada);
-					MapaJugadores.modificaUsuario(u);
-				}
+				imgSeleccionada = "imgs/9.jpg";
+				lblSeleccion.setIcon(new ImageIcon(imgSeleccionada));
 			}
 		});
 	}
