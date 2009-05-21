@@ -27,7 +27,8 @@ public class LeerUsuarios
 		{
 			try
 			{
-				ois.close();
+				if(ois != null)
+					ois.close();
 				fis.close();
 				return true;
 			}
