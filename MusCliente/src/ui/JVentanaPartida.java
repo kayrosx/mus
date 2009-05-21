@@ -10,6 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import net.ConectarServidor;
+
 import obj.Usuario;
 
 import java.awt.BorderLayout;
@@ -20,59 +22,64 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public final class JVentanaPartida extends JFrame
 {
-	Usuario u;
-	JTextArea txtAChat = new JTextArea(2, 10);
-	JTextField txtChat = new JTextField(15);
+	private Usuario u;
+	private JTextArea txtAChat = new JTextArea(2, 10);
+	private JTextField txtChat = new JTextField(15);
 	
-	JLabel lblPuntos1 = new JLabel("Puntos: ");
-	JLabel lblPuntos2 = new JLabel("Puntos: ");
+	private JLabel lblPuntos1 = new JLabel("Puntos: ");
+	private JLabel lblPuntos2 = new JLabel("Puntos: ");
 	
-	JButton btnChat = new JButton("Enviar");
-	JButton btnMus = new JButton("Mus");
-	JButton btnNoMus = new JButton("No Mus");
-	JButton btnPasar = new JButton("Pasar");
-	JButton btnEnvidar = new JButton("Envidar 2");
-	JButton btnOrdago = new JButton("Ordago");
-	JButton btnVer = new JButton("Veo");
-	JButton btnNoQuiero = new JButton("No Quiero");
-	JButton btnDescartar = new JButton("Descartar");
-	JButton btnSubir = new JButton("Subir 2");
+	private JButton btnChat = new JButton("Enviar");
+	private JButton btnMus = new JButton("Mus");
+	private JButton btnNoMus = new JButton("No Mus");
+	private JButton btnPasar = new JButton("Pasar");
+	private JButton btnEnvidar = new JButton("Envidar 2");
+	private JButton btnOrdago = new JButton("Ordago");
+	private JButton btnVer = new JButton("Veo");
+	private JButton btnNoQuiero = new JButton("No Quiero");
+	private JButton btnDescartar = new JButton("Descartar");
+	private JButton btnSubir = new JButton("Subir 2");
 	
-	JLabel carta1Jugador1 = new JLabel();
-	JLabel carta2Jugador1 = new JLabel();
-	JLabel carta3Jugador1 = new JLabel();
-	JLabel carta4Jugador1 = new JLabel();
-	JLabel carta1Jugador2 = new JLabel();
-	JLabel carta2Jugador2 = new JLabel();
-	JLabel carta3Jugador2 = new JLabel();
-	JLabel carta4Jugador2 = new JLabel();
-	JLabel carta1Jugador3 = new JLabel();
-	JLabel carta2Jugador3 = new JLabel();
-	JLabel carta3Jugador3 = new JLabel();
-	JLabel carta4Jugador3 = new JLabel();
-	JLabel carta1Jugador4 = new JLabel();
-	JLabel carta2Jugador4 = new JLabel();
-	JLabel carta3Jugador4 = new JLabel();
-	JLabel carta4Jugador4 = new JLabel();
+	private JLabel carta1Jugador1 = new JLabel();
+	private JLabel carta2Jugador1 = new JLabel();
+	private JLabel carta3Jugador1 = new JLabel();
+	private JLabel carta4Jugador1 = new JLabel();
+	private JLabel carta1Jugador2 = new JLabel();
+	private JLabel carta2Jugador2 = new JLabel();
+	private JLabel carta3Jugador2 = new JLabel();
+	private JLabel carta4Jugador2 = new JLabel();
+	private JLabel carta1Jugador3 = new JLabel();
+	private JLabel carta2Jugador3 = new JLabel();
+	private JLabel carta3Jugador3 = new JLabel();
+	private JLabel carta4Jugador3 = new JLabel();
+	private JLabel carta1Jugador4 = new JLabel();
+	private JLabel carta2Jugador4 = new JLabel();
+	private JLabel carta3Jugador4 = new JLabel();
+	private JLabel carta4Jugador4 = new JLabel();
 	
-	JPanel pnlSuperior = new JPanel(new GridLayout(2,1));
-	JPanel pnlChat = new JPanel(new BorderLayout());
-	JPanel pnlCentral = new JPanel(new BorderLayout());
-	JPanel pnlInferior = new JPanel(new FlowLayout());
-	JPanel pnlMus = new JPanel(new FlowLayout());
-	JPanel pnlEnvidar = new JPanel(new FlowLayout());
-	JPanel pnlSubir = new JPanel(new FlowLayout());
-	JPanel pnlDescartar = new JPanel(new FlowLayout());
-	JPanel pnlUsuarioCartas = new JPanel(new FlowLayout());
-	Box pnlUsuarioDerCartas = new Box(BoxLayout.Y_AXIS);
-	Box pnlUsuarioIzqCartas = new Box(BoxLayout.Y_AXIS);
-	JPanel pnlUsuarioSupCartas = new JPanel(new FlowLayout());
+	private JPanel pnlSuperior = new JPanel(new GridLayout(2,1));
+	private JPanel pnlChat = new JPanel(new BorderLayout());
+	private JPanel pnlCentral = new JPanel(new BorderLayout());
+	private JPanel pnlInferior = new JPanel(new FlowLayout());
+	private JPanel pnlMus = new JPanel(new FlowLayout());
+	private JPanel pnlEnvidar = new JPanel(new FlowLayout());
+	private JPanel pnlSubir = new JPanel(new FlowLayout());
+	private JPanel pnlDescartar = new JPanel(new FlowLayout());
+	private JPanel pnlUsuarioCartas = new JPanel(new FlowLayout());
+	private Box pnlUsuarioDerCartas = new Box(BoxLayout.Y_AXIS);
+	private Box pnlUsuarioIzqCartas = new Box(BoxLayout.Y_AXIS);
+	private JPanel pnlUsuarioSupCartas = new JPanel(new FlowLayout());
 	
-	public JVentanaPartida(Usuario u)
+	private ConectarServidor hilo;
+	
+	public JVentanaPartida(Usuario u, ConectarServidor h)
 	{
+		this.hilo = h;
 		this.u = u;
 		init();
 		events();
@@ -171,7 +178,7 @@ public final class JVentanaPartida extends JFrame
 		//this.setLocation(180, 40);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
 	}
 	
@@ -204,6 +211,18 @@ public final class JVentanaPartida extends JFrame
 				JVentanaPartida.this.add(pnlEnvidar, BorderLayout.SOUTH);
 				JVentanaPartida.this.remove(pnlMus);
 				JVentanaPartida.this.validate();
+			}
+		});
+		
+		JVentanaPartida.this.addWindowListener(new WindowAdapter()
+		{
+			public void windowClosing(WindowEvent e)
+			{
+				// Modifico los valores del usuario que hagan falta (los puntos)
+				
+				// Mandar un mensaje al servidor diciendo que se desconecta
+				// y enviar el usuario
+				hilo.desconectar(u);
 			}
 		});
 	}

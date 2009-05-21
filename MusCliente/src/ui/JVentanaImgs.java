@@ -21,28 +21,28 @@ import obj.Usuario;
 
 public class JVentanaImgs extends JFrame
 {
-	Usuario u;
-	String imgSeleccionada = "";
-	JLabel lblImg1 = new JLabel(new ImageIcon("imgs/1.jpg"));
-	JLabel lblImg2 = new JLabel(new ImageIcon("imgs/2.jpg"));
-	JLabel lblImg3 = new JLabel(new ImageIcon("imgs/3.jpg"));
-	JLabel lblImg4 = new JLabel(new ImageIcon("imgs/4.jpg"));
-	JLabel lblImg5 = new JLabel(new ImageIcon("imgs/5.jpg"));
-	JLabel lblImg6 = new JLabel(new ImageIcon("imgs/6.jpg"));
-	JLabel lblImg7 = new JLabel(new ImageIcon("imgs/7.jpg"));
-	JLabel lblImg8 = new JLabel(new ImageIcon("imgs/8.jpg"));
-	JLabel lblImg9 = new JLabel(new ImageIcon("imgs/9.jpg"));
-	JLabel lblSeleccionar = new JLabel("Imagen seleccionada: ");
-	JLabel lblSeleccion = new JLabel();
-	JButton btnSeleccionar = new JButton("Seleccionar");
-	JButton btnCancelar = new JButton("Cancelar");
+	private Usuario u;
+	private String imgSeleccionada = "";
+	private JLabel lblImg1 = new JLabel(new ImageIcon("imgs/1.jpg"));
+	private JLabel lblImg2 = new JLabel(new ImageIcon("imgs/2.jpg"));
+	private JLabel lblImg3 = new JLabel(new ImageIcon("imgs/3.jpg"));
+	private JLabel lblImg4 = new JLabel(new ImageIcon("imgs/4.jpg"));
+	private JLabel lblImg5 = new JLabel(new ImageIcon("imgs/5.jpg"));
+	private JLabel lblImg6 = new JLabel(new ImageIcon("imgs/6.jpg"));
+	private JLabel lblImg7 = new JLabel(new ImageIcon("imgs/7.jpg"));
+	private JLabel lblImg8 = new JLabel(new ImageIcon("imgs/8.jpg"));
+	private JLabel lblImg9 = new JLabel(new ImageIcon("imgs/9.jpg"));
+	private JLabel lblSeleccionar = new JLabel("Imagen seleccionada: ");
+	private JLabel lblSeleccion = new JLabel();
+	private JButton btnSeleccionar = new JButton("Seleccionar");
+	private JButton btnCancelar = new JButton("Cancelar");
 	
-	JPanel pnlSuperior = new JPanel(new GridLayout(2,1));
-	JPanel pnlSuperior1 = new JPanel(new FlowLayout());
-	JPanel pnlSuperior2 = new JPanel(new FlowLayout());
-	JPanel pnlInferior = new JPanel(new FlowLayout());
+	private JPanel pnlSuperior = new JPanel(new GridLayout(2,1));
+	private JPanel pnlSuperior1 = new JPanel(new FlowLayout());
+	private JPanel pnlSuperior2 = new JPanel(new FlowLayout());
+	private JPanel pnlInferior = new JPanel(new FlowLayout());
 	
-	ConectarServidor hilo;
+	private ConectarServidor hilo;
 	
 	public JVentanaImgs(Usuario u, ConectarServidor h)
 	{
@@ -75,19 +75,15 @@ public class JVentanaImgs extends JFrame
 		pnlSuperior.add(pnlSuperior1);
 		
 		pnlSuperior2.add(lblSeleccionar);
-		if(!imgSeleccionada.isEmpty())
-		{
-			lblSeleccion = new JLabel(new ImageIcon(imgSeleccionada));
-		}
-		else if (!u.getImg().isEmpty())
+		if (!u.getImg().isEmpty())
 		{
 			lblSeleccion = new JLabel(new ImageIcon(u.getImg()));
 		}
 		else
 		{
 			imgSeleccionada = "imgs/1.jpg";
-			lblSeleccion = new JLabel(new ImageIcon(imgSeleccionada));	
 			u.setImg(imgSeleccionada);
+			lblSeleccion = new JLabel(new ImageIcon(imgSeleccionada));	
 		}
 		pnlSuperior2.add(lblSeleccion);
 		pnlSuperior.add(pnlSuperior2);
@@ -103,7 +99,7 @@ public class JVentanaImgs extends JFrame
 		this.setResizable(false);
 		this.pack();
 		this.setLocationRelativeTo(null);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
 	}
 	

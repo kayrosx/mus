@@ -21,15 +21,15 @@ import obj.Usuario;
 
 public class JVentanaPass extends JFrame
 {
-	Usuario u;
-	JLabel lblPassA = new JLabel("Contraseña antigua:");
-	JLabel lblPassN = new JLabel("Contraseña nueva:");
-	JLabel lblPassNC = new JLabel("Confirma la contraseña:");
-	JPasswordField txtPassA = new JPasswordField(10);
-	JPasswordField txtPassN = new JPasswordField(10);
-	JPasswordField txtPassNC = new JPasswordField(10);
-	JButton btnAceptar = new JButton("Aceptar");
-	JButton btnCancelar = new JButton("Cancelar");
+	private Usuario u;
+	private JLabel lblPassA = new JLabel("Contraseña antigua:");
+	private JLabel lblPassN = new JLabel("Contraseña nueva:");
+	private JLabel lblPassNC = new JLabel("Confirma la contraseña:");
+	private JPasswordField txtPassA = new JPasswordField(10);
+	private JPasswordField txtPassN = new JPasswordField(10);
+	private JPasswordField txtPassNC = new JPasswordField(10);
+	private JButton btnAceptar = new JButton("Aceptar");
+	private JButton btnCancelar = new JButton("Cancelar");
 	
 	private ConectarServidor hilo;
 	
@@ -71,7 +71,7 @@ public class JVentanaPass extends JFrame
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setVisible(true);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 	
 	private void events()

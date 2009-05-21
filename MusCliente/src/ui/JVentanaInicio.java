@@ -16,9 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import net.ConectarServidor;
-
 import obj.Usuario;
+
+import net.ConectarServidor;
 
 
 public final class JVentanaInicio extends JFrame
@@ -31,6 +31,9 @@ public final class JVentanaInicio extends JFrame
 	private JButton btnLogin = new JButton("Acceder");
 	private ConectarServidor hilo;
 	private Usuario u;
+	
+	public static final int NO_CONECTABLE = 1;
+	public static final int UNKNOWN_HOST = 2;
 	
 	public static void main(String[] args)
 	{
@@ -83,7 +86,7 @@ public final class JVentanaInicio extends JFrame
 		this.pack();
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
 	}
 	
@@ -132,6 +135,8 @@ public final class JVentanaInicio extends JFrame
 							txtNombre.requestFocus();
 						}
 					}
+					else if(login == -1)
+						mensajeError(1, true);
 				}
 				else
 				{
@@ -161,7 +166,21 @@ public final class JVentanaInicio extends JFrame
 	
 	public void conectar()
 	{
-		hilo = new ConectarServidor();
+		hilo = new ConectarServidor(this);
 		hilo.start();
+	}
+	
+	public void mensajeError(int mensaje, boolean cerrarAplicacion)
+	{
+		String s = "";
+		
+		if(mensaje == NO_CONECTABLE)
+			s = "No se ha podido conectar con el servidor.\nInténtalo más tarde.";
+		else if(mensaje == UNKNOWN_HOST)
+			s = "No se encuentra el servidor.\nInténtalo de nuevo más tarde.";
+		
+		JOptionPane.showMessageDialog(JVentanaInicio.this, s, "Error de conexión", JOptionPane.ERROR_MESSAGE);
+		if(cerrarAplicacion)
+			this.dispose();
 	}
 }

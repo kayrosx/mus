@@ -21,17 +21,18 @@ import obj.Usuario;
 
 public class JVentanaTPartida extends JFrame
 {
-	Usuario u;
-	JRadioButton rb1 = new JRadioButton("1 jugador");
-	JRadioButton rb4 = new JRadioButton("4 jugadores");
-	JLabel lblMensaje = new JLabel("Selecciona el numero de jugadores:");
-	JButton btnAceptar = new JButton("Aceptar");
-	JButton btnCancelar = new JButton("Cancelar");
+	private Usuario u;
+	private JRadioButton rb1 = new JRadioButton("1 jugador");
+	private JRadioButton rb4 = new JRadioButton("4 jugadores");
+	private JLabel lblMensaje = new JLabel("Selecciona el numero de jugadores:");
+	private JButton btnAceptar = new JButton("Aceptar");
+	private JButton btnCancelar = new JButton("Cancelar");
 	
 	private ConectarServidor hilo;
 	
-	public JVentanaTPartida(Usuario u)
+	public JVentanaTPartida(Usuario u, ConectarServidor hilo)
 	{
+		this.hilo = hilo;
 		this.u = u;
 		init();
 		events();
@@ -65,7 +66,7 @@ public class JVentanaTPartida extends JFrame
 		this.pack();
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
 	}
 	
@@ -84,7 +85,7 @@ public class JVentanaTPartida extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				new JVentanaPartida(u);
+				new JVentanaPartida(hilo.getUsuario(u), hilo);
 				JVentanaTPartida.this.dispose();
 			}
 		});

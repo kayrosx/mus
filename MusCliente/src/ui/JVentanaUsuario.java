@@ -20,12 +20,12 @@ import obj.Usuario;
 
 public class JVentanaUsuario extends JFrame
 {
-	Usuario u;
-	JLabel lblNombre = new JLabel();
-	JLabel lblImg;
-	JButton btnIniciarPartida = new JButton("Iniciar Partida");
-	JButton btnModificarImg = new JButton("Modificar Imagen");
-	JButton btnModificarPass = new JButton("Cambiar Contraseña");
+	private Usuario u;
+	private JLabel lblNombre = new JLabel();
+	private JLabel lblImg;
+	private JButton btnIniciarPartida = new JButton("Iniciar Partida");
+	private JButton btnModificarImg = new JButton("Modificar Imagen");
+	private JButton btnModificarPass = new JButton("Cambiar Contraseña");
 	
 	ConectarServidor hilo;
 	
@@ -65,7 +65,7 @@ public class JVentanaUsuario extends JFrame
 		this.pack();
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
 	}
 	
@@ -75,7 +75,7 @@ public class JVentanaUsuario extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				new JVentanaTPartida(u);
+				new JVentanaTPartida(u, hilo);
 				JVentanaUsuario.this.dispose();
 			}
 		});
@@ -95,14 +95,6 @@ public class JVentanaUsuario extends JFrame
 			{
 				new JVentanaPass(u, hilo);
 				JVentanaUsuario.this.dispose();
-			}
-		});
-		
-		JVentanaUsuario.this.addWindowListener(new WindowAdapter()
-		{
-			public void windowClosing(WindowEvent e)
-			{
-				// Mandar un mensaje al servidor diciendo que 
 			}
 		});
 	}

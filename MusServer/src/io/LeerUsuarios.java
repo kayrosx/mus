@@ -17,7 +17,7 @@ public class LeerUsuarios
 		ObjectInputStream ois = null; 
 		try
 		{		
-			fis = new FileInputStream("jugadores.obj");  
+			fis = new FileInputStream("usuarios.obj");  
 			ois = new ObjectInputStream(fis);
 			while(true)
 				MapaJugadores.add((Usuario)ois.readObject());

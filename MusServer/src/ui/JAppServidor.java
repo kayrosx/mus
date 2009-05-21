@@ -9,8 +9,11 @@ import java.awt.FlowLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -29,6 +32,7 @@ public class JAppServidor extends JFrame implements Runnable
 	private JButton btnInforme = new JButton("Generar Informe");
 	private JTextArea txtConversacion = new JTextArea(80, 30);
 	private HiloEscuchador servidorListener; 
+	private JScrollPane scroll = new JScrollPane(txtConversacion);
 	
 	private Thread hiloReloj;
 	
@@ -52,7 +56,8 @@ public class JAppServidor extends JFrame implements Runnable
 		
 		this.setLayout(new BorderLayout());
 		this.add(lblEstado, BorderLayout.NORTH);
-		this.add(new JScrollPane(txtConversacion), BorderLayout.CENTER);
+		this.add(scroll, BorderLayout.CENTER);
+		txtConversacion.scrollRectToVisible(getBounds());
 		
 		// Panel sur
 		JPanel pnlSur = new JPanel(new FlowLayout());
@@ -60,7 +65,7 @@ public class JAppServidor extends JFrame implements Runnable
 		pnlSur.add(btnInforme);
 		
 		this.add(pnlSur, BorderLayout.SOUTH);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setTitle("Servidor");
 		this.setSize(300, 185);
 		this.setVisible(true);
@@ -98,6 +103,15 @@ public class JAppServidor extends JFrame implements Runnable
 			{
 				Informe.generaInforme();
 				JOptionPane.showMessageDialog(JAppServidor.this, "Informe generado correctamente", "Informe generado", JOptionPane.INFORMATION_MESSAGE);
+				Runtime rt = Runtime.getRuntime();
+				try
+				{
+					rt.exec("cmd /c start informe.html");
+				}
+				catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
 			}
 		});
 	}
@@ -109,6 +123,7 @@ public class JAppServidor extends JFrame implements Runnable
 	
 	public void addMensaje(String s)
 	{
+		s = s + "\n";
 		txtConversacion.append(s);
 	}
 	

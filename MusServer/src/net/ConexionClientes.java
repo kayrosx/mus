@@ -19,8 +19,11 @@ public class ConexionClientes extends Thread
 	private ObjectOutputStream oos;
 	private JAppServidor ventanaServidor;
 	
-	public ConexionClientes(Socket s, JAppServidor v)
+	private HiloEscuchador hPadre;
+	
+	public ConexionClientes(Socket s, JAppServidor v, HiloEscuchador hPadre)
 	{
+		this.hPadre = hPadre;
 	    socketServidor = s;
         ventanaServidor = v;
 	}
@@ -34,11 +37,11 @@ public class ConexionClientes extends Thread
 			dos = new DataOutputStream(socketServidor.getOutputStream());
 			oos = new ObjectOutputStream(socketServidor.getOutputStream());
 			
-			ventanaServidor.addMensaje("Conectado\n");
+			ventanaServidor.addMensaje("Conectado" + socketServidor.getInetAddress().toString().replace("/", ""));
 			
-			int opc = dis.readInt();
-			while(opc != -1)
+			while(true)
 			{
+				int opc = dis.readInt();
 				switch(opc)
 				{
 				case 1:		// Login
@@ -98,7 +101,6 @@ public class ConexionClientes extends Thread
 					try 
 					{
 						uMod = (Usuario)ois.readObject();
-						System.out.println(uMod);
 						boolean mod = false;
 						mod = MapaJugadores.modificaUsuario(uMod);
 						dos.writeBoolean(mod);
@@ -124,12 +126,15 @@ public class ConexionClientes extends Thread
 						e.printStackTrace();
 					}
 					break;
+				case -1:	// El cliente se desconecta
+					break;
 				}
-				opc = dis.readInt();
 			}
 		} 
         catch (IOException e)
 		{
+        	// Salta aquí cuando se desconecta el cliente
+        	hPadre.clienteDesconectado(socketServidor);
 			System.out.println("Cliente desconectado");
 		}
 	}

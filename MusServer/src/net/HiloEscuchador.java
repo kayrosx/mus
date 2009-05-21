@@ -8,9 +8,9 @@ import ui.JAppServidor;
 
 public class HiloEscuchador extends Thread 
 {
-	JAppServidor ventanaServidor ;
-	boolean fin = false;
-	ArrayList<ConexionClientes> listaClientes = new ArrayList<ConexionClientes>();
+	private JAppServidor ventanaServidor ;
+	private ArrayList<ConexionClientes> listaClientes = new ArrayList<ConexionClientes>();
+	private int conectados;
 	
 	public HiloEscuchador(JAppServidor v)
 	{
@@ -19,6 +19,7 @@ public class HiloEscuchador extends Thread
 	
 	public void run()
 	{
+		conectados = 0;
 		ventanaServidor.setEstado("Escuchando...");
 		try 
 		{
@@ -29,14 +30,34 @@ public class HiloEscuchador extends Thread
 			while(true)
 			{
 				sServidor = ss.accept();
-				ConexionClientes gc = new ConexionClientes(sServidor, ventanaServidor);
-				gc.start();
-				listaClientes.add(gc);
+				// Se establece que el número máximo de clientes conectados a la vez es de 4
+				if(conectados < 4)
+				{
+					conectados++;
+					ConexionClientes gc = new ConexionClientes(sServidor, ventanaServidor, this);
+					gc.start();
+					listaClientes.add(gc);
+				}
+				else
+				{
+					ventanaServidor.addMensaje("Se ha conectado un nuevo cliente " + 
+							sServidor.getInetAddress().toString().replace("/", "") + " pero se ha llegado al máximo de conexiones permitidas");
+					sServidor.close();
+				}
 			}
 		}
 		catch (IOException e1)
 		{
 			ventanaServidor.setError(e1.toString());
+			ventanaServidor.dispose();
 		}
+	}
+	
+	public void clienteDesconectado(Socket s)
+	{
+		// Quitamos el cliente de la lista de clientes conectados
+		listaClientes.remove(s);
+		// Restamos 1 al número de clientes conectados
+		conectados--;
 	}
 }

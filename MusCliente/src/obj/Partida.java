@@ -2,17 +2,17 @@ package obj;
 
 public class Partida
 {
-	Usuario u1;
-	Usuario u2;
-	Usuario u3;
-	Usuario u4;
-	Baraja b;
-	Jugador j1;
-	Jugador j2;
-	Jugador j3;
-	Jugador j4;
-	Equipo equipo1;
-	Equipo equipo2;
+	private Usuario u1;
+	private Usuario u2;
+	private Usuario u3;
+	private Usuario u4;
+	private Baraja b;
+	private Jugador j1;
+	private Jugador j2;
+	private Jugador j3;
+	private Jugador j4;
+	private Equipo equipo1;
+	private Equipo equipo2;
 	
 	public Partida(Usuario u1, Usuario u2, Usuario u3, Usuario u4)
 	{

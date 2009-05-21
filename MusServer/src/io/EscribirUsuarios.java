@@ -19,7 +19,7 @@ public class EscribirUsuarios
 		
 		try 
 		{			
-			FileOutputStream fos = new FileOutputStream("jugadores.obj");  
+			FileOutputStream fos = new FileOutputStream("usuarios.obj");  
 			ObjectOutputStream oos = new ObjectOutputStream (fos);
 		
 			while(i.hasNext())

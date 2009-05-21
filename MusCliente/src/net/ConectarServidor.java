@@ -9,19 +9,28 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import obj.Usuario;
+import ui.JVentanaInicio;
 
 public class ConectarServidor extends Thread
 {
+	private JVentanaInicio v;
+	
 	private Socket sCliente;
 	private DataOutputStream dos;
 	private DataInputStream dis;
 	private ObjectOutputStream oos;
 	private ObjectInputStream ois;
 	
-	private final int LOGIN = 1;
-	private final int CREA_USUARIO = 2;
-	private final int MODIFICA_USUARIO = 3;
-	private final int DEVUELVE_USUARIO = 4;
+	private static final int LOGIN = 1;
+	private static final int CREA_USUARIO = 2;
+	private static final int MODIFICA_USUARIO = 3;
+	private static final int DEVUELVE_USUARIO = 4;
+	private static final int DESCONECTAR = -1;
+	
+	public ConectarServidor(JVentanaInicio v)
+	{
+		this.v = v;
+	}
 	
 	public void run()
 	{
@@ -35,17 +44,17 @@ public class ConectarServidor extends Thread
 		} 
 		catch (UnknownHostException e)
 		{
-			System.out.println("No se encuentra el servidor");
+			v.mensajeError(v.UNKNOWN_HOST, true);
 		} 
 		catch (IOException e)
 		{
-			System.out.println("No se puede conectar al servidor");
+			v.mensajeError(v.NO_CONECTABLE, true);
 		}
 	}
 	
 	public int login(Usuario u)
 	{
-		int login = -1;
+		int login;
 		try 
 		{
 			// Envío el código para el servidor
@@ -57,7 +66,7 @@ public class ConectarServidor extends Thread
 		} 
 		catch (IOException e) 
 		{
-			e.printStackTrace();
+			login = -1;
 		}
 		return login;
 	}
@@ -91,7 +100,6 @@ public class ConectarServidor extends Thread
 			dos.writeInt(MODIFICA_USUARIO);
 			// Envío el usuario a modificar
 			oos.writeObject(u);
-			System.out.println(u);
 			// Recibo si se ha modificado correctamente
 			b = dis.readBoolean();
 		} 
@@ -124,5 +132,22 @@ public class ConectarServidor extends Thread
 		{
 			return null;
 		}
+	}
+
+	public void desconectar(Usuario u)
+	{
+		
+		try
+		{
+			// Envío el código para el servidor
+			dos.writeInt(DESCONECTAR);
+			// Envío el usuario para que lo desconecte
+			oos.writeObject(u);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
 	}
 }
