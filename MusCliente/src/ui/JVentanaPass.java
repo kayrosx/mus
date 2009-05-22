@@ -93,7 +93,7 @@ public class JVentanaPass extends JFrame
 							// MANDAR EL USUARIO MODIFICADO
 							hilo.getUsuario(u);
 							u.setPass(passNC);
-							hilo.modificaUsuario(u);
+							hilo.modificaUsuario(u, ConectarServidor.PASS);
 							JOptionPane.showMessageDialog(JVentanaPass.this, "La contraseña se ha cambiado satisfactoriamente.", "Contraseña Cambiada", JOptionPane.INFORMATION_MESSAGE);
 							new JVentanaUsuario(u, hilo);
 							JVentanaPass.this.dispose();

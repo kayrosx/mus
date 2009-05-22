@@ -100,7 +100,29 @@ public class ConexionClientes extends Thread
 					Usuario uMod;
 					try 
 					{
+						// Recibo el código de qué quiero cambiar
+						int opc1 = dis.readInt();
+						
+						// Recibo el usuario sobre el que cambiarla
 						uMod = (Usuario)ois.readObject();
+						
+						switch(opc1)
+						{
+						case 1: // Imagen
+							// Recibo la imagen a cambiar
+							String img = (String)ois.readObject();
+							uMod.setImg(img);
+							break;
+						case 2: // Contraseña
+							String pass = (String)ois.readObject();
+							uMod.setPass(pass);
+							break;
+						case 3: // Puntos
+							int puntos = dis.readInt();
+							uMod.setPuntos(puntos);
+							break;
+						}
+						
 						boolean mod = false;
 						mod = MapaJugadores.modificaUsuario(uMod);
 						dos.writeBoolean(mod);

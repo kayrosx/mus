@@ -27,6 +27,10 @@ public class ConectarServidor extends Thread
 	private static final int DEVUELVE_USUARIO = 4;
 	private static final int DESCONECTAR = -1;
 	
+	public static final int IMG = 1;
+	public static final int PASS = 2;
+	public static final int PUNTOS = 3;
+	
 	public ConectarServidor(JVentanaInicio v)
 	{
 		this.v = v;
@@ -91,15 +95,37 @@ public class ConectarServidor extends Thread
 		return creado;
 	}
 	
-	public boolean modificaUsuario(Usuario u)
+	public boolean modificaUsuario(Usuario u, int opc)
 	{
 		Boolean b = false;
 		try 
 		{
 			// Envío el código para el servidor
 			dos.writeInt(MODIFICA_USUARIO);
+			
+			// Envío el código para saber qué modificar
+			dos.writeInt(opc);
+			
 			// Envío el usuario a modificar
 			oos.writeObject(u);
+			
+			if(opc == IMG)
+			{
+				// Envío la imagen
+				oos.writeObject(u.getImg());
+				
+			}
+			else if(opc == PASS)
+			{
+				// Envío la contraseña
+				oos.writeObject(u.getPass());
+			}
+			else if(opc == PUNTOS)
+			{
+				// Envío los puntos
+				oos.writeObject(u.getPuntos());
+			}
+			
 			// Recibo si se ha modificado correctamente
 			b = dis.readBoolean();
 		} 

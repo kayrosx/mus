@@ -112,7 +112,7 @@ public class JVentanaImgs extends JFrame
 				// MANDAR EL USUARIO MODIFICADO
 				Usuario user = hilo.getUsuario(u);
 				user.setImg(imgSeleccionada);
-				if(hilo.modificaUsuario(user))
+				if(hilo.modificaUsuario(user, ConectarServidor.IMG))
 				{
 					new JVentanaUsuario(user, hilo);
 					JVentanaImgs.this.dispose();
